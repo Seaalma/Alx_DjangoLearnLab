@@ -1,32 +1,36 @@
-from django.db import models
+import os
+import django
 
-# Author Model
-class Author(models.Model):
-    name = models.CharField(max_length=100)
+# Set up Django environment
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django-models.settings')
+django.setup()
 
-    def __str__(self):
-        return self.name
+from relationship_app.models import Author, Book, Library, Librarian
 
-# Book Model
-class Book(models.Model):
-    title = models.CharField(max_length=200)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+# Query all books by a specific author
+def get_books_by_author(author_name):
+    author = Author.objects.filter(name=author_name).first()
+    if author:
+        return Book.objects.filter(author=author)
+    return None
 
-    def __str__(self):
-        return self.title
+# List all books in a library
+def get_books_in_library(library_name):
+    library = Library.objects.filter(name=library_name).first()
+    if library:
+        return library.books.all()
+    return None
 
-# Library Model
-class Library(models.Model):
-    name = models.CharField(max_length=200)
-    books = models.ManyToManyField(Book)
+# Retrieve the librarian for a library
+def get_librarian_for_library(library_name):
+    library = Library.objects.filter(name=library_name).first()
+    if library:
+        return Librarian.objects.filter(library=library).first()
+    return None
 
-    def __str__(self):
-        return self.name
+# Example usage
+if __name__ == "__main__":
+    print("Books by George Orwell:", list(get_books_by_author("George Orwell")))
+    print("Books in City Library:", list(get_books_in_library("City Library")))
+    print("Librarian for City Library:", get_librarian_for_library("City Library"))
 
-# Librarian Model
-class Librarian(models.Model):
-    name = models.CharField(max_length=100)
-    library = models.OneToOneField(Library, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
