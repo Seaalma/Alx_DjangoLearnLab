@@ -1,3 +1,5 @@
-book_to_delete = Book.objects.first()  # This grabs the first book
-book_to_delete.delete()  # This deletes the book
+from bookshelf.models import Book
+Book.objects.all()
+book_to_delete = Book.objects.first()  
+book_to_delete.delete()  
 Book.objects.all()
