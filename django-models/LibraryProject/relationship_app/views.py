@@ -1,26 +1,30 @@
 # relationship_app/views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.views import LoginView, LogoutView
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .models import UserProfile
 
-# Login View
-class CustomLoginView(LoginView):
-    template_name = "relationship_app/login.html"
+# Role check functions
+def is_admin(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
-# Logout View
-class CustomLogoutView(LogoutView):
-    template_name = "relationship_app/logout.html"
+def is_librarian(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
 
-# Registration View
-def register(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)  # Log in the newly registered user
-            return redirect("home")  # Redirect to a page after login
-    else:
-        form = UserCreationForm()
+def is_member(user):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
 
-    return render(request, "relationship_app/register.html", {"form": form})
+# Views with role-based access control
+@login_required
+@user_passes_test(is_admin)
+def admin_view(request):
+    return render(request, "relationship_app/admin_view.html")
+
+@login_required
+@user_passes_test(is_librarian)
+def librarian_view(request):
+    return render(request, "relationship_app/librarian_view.html")
+
+@login_required
+@user_passes_test(is_member)
+def member_view(request):
+    return render(request, "relationship_app/member_view.html")
