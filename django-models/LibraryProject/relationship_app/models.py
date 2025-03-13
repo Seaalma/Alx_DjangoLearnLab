@@ -1,32 +1,29 @@
+# relationship_app/models.py
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-# Author Model
-class Author(models.Model):
-    name = models.CharField(max_length=255)
+# Role choices
+ROLE_CHOICES = [
+    ('Admin', 'Admin'),
+    ('Librarian', 'Librarian'),
+    ('Member', 'Member'),
+]
 
-    def __str__(self):
-        return self.name
-
-# Book Model (ForeignKey to Author)
-class Book(models.Model):
-    title = models.CharField(max_length=255)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.title
-
-# Library Model (ManyToMany with Book)
-class Library(models.Model):
-    name = models.CharField(max_length=255)
-    books = models.ManyToManyField(Book)
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Member')
 
     def __str__(self):
-        return self.name
+        return f"{self.user.username} - {self.role}"
 
-# Librarian Model (OneToOne with Library)
-class Librarian(models.Model):
-    name = models.CharField(max_length=255)
-    library = models.OneToOneField(Library, on_delete=models.CASCADE)
+# Automatically create UserProfile when a new user is registered
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
 
-    def __str__(self):
-        return self.name
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.userprofile.save()
