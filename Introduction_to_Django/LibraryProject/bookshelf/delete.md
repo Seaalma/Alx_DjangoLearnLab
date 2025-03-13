@@ -1,2 +1,1 @@
-book.delete()
-print(Book.objects.all())  
+from bookshelf.models import Book
