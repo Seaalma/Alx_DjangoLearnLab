@@ -1,20 +1,13 @@
+# settings.py
 
-DEBUG = False
+# Enforce HTTPS redirection
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP requests to HTTPS
 
-# Secure your application by setting these values
-SECURE_BROWSER_XSS_FILTER = True  # Prevents some cross-site scripting (XSS) attacks
-X_FRAME_OPTIONS = 'DENY'  # Prevent embedding of your site in a frame (Clickjacking protection)
-SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent browsers from interpreting files as something else
-
-# Ensure cookies are sent over HTTPS only
-CSRF_COOKIE_SECURE = True  # CSRF cookie is only sent over HTTPS
-SESSION_COOKIE_SECURE = True  # Session cookie is only sent over HTTPS
-
-# Set a secure cookie for CSRF and session cookies
-CSRF_COOKIE_HTTPONLY = True  # Prevent JavaScript from accessing the CSRF cookie
-SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript from accessing session cookies
-
-# HSTS (HTTP Strict Transport Security) to force HTTPS connections
+# HTTP Strict Transport Security (HSTS)
 SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include all subdomains in HSTS
-SECURE_HSTS_PRELOAD = True  # Preload HSTS for browser support
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow your site to be included in browser preloading lists
+
+# Ensure secure cookies
+SESSION_COOKIE_SECURE = True  # Session cookies will only be sent over HTTPS
+CSRF_COOKIE_SECURE = True  # CSRF cookies will only be sent over HTTPS
