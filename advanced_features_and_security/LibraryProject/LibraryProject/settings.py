@@ -26,4 +26,23 @@ SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent browsers from interpreting files a
 
 # Enable browser XSS filter
 SECURE_BROWSER_XSS_FILTER = True  # Protect against cross-site scripting attacks
+# settings.py
+
+# Trust the X-Forwarded-Proto header to indicate the original protocol
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow the use of HTTPS when behind a reverse proxy (Nginx or similar)
+SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Enable secure cookies for HTTPS
+SESSION_COOKIE_SECURE = True  # Session cookies over HTTPS only
+CSRF_COOKIE_SECURE = True  # CSRF cookies over HTTPS only
+
+# Other security-related headers
+X_FRAME_OPTIONS = 'DENY'  # Prevent framing of site (Clickjacking)
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME-sniffing
+SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filtering
 
