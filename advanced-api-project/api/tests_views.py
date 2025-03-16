@@ -1,72 +1,82 @@
 from django.test import TestCase
-from rest_framework.test import APITestCase
-from rest_framework import status
 from django.contrib.auth.models import User
-from api.models import Book
 from rest_framework.test import APIClient
-class BookAPITestCase(APITestCase):
+from rest_framework import status
+from api.models import Book  # Ensure this is the correct import path
+
+class BookAPITestCase(TestCase):
+    """Test case for Book model API endpoints"""
 
     def setUp(self):
-        """Setup test data and client"""
+        """Set up test data and client"""
         self.client = APIClient()
-        
-        # Create test user
-        self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.force_authenticate(user=self.user)  # Authenticate the client
-        
-        # Create test book instance
-        self.book = Book.objects.create(title="Test Book", author="John Doe", publication_year=2024)
+        self.user = User.objects.create_user(username="testuser", password="testpass")
 
-        # API Endpoints
-        self.list_url = "/api/books/"
-        self.detail_url = f"/api/books/{self.book.id}/"
+        # Authenticate user
+        self.client.force_authenticate(user=self.user)
 
-    def test_list_books(self):
-        """Test retrieving all books (GET /api/books/)"""
-        response = self.client.get(self.list_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)  # Expected status: 200
+        # Create test books
+        self.book1 = Book.objects.create(title="Book One", author="Author One", price=10.99)
+        self.book2 = Book.objects.create(title="Book Two", author="Author Two", price=15.50)
+
+        # Define API endpoint
+        self.book_list_url = "/api/books/"  # Adjust if necessary
+        self.book_detail_url = f"/api/books/{self.book1.id}/"
 
     def test_create_book(self):
-        """Test creating a book (POST /api/books/)"""
-        data = {"title": "New Book", "author": "Jane Doe", "publication_year": 2025}
-        response = self.client.post(self.list_url, data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # Expected status: 201
+        """Test creating a book"""
+        data = {"title": "New Book", "author": "New Author", "price": 20.00}
+        response = self.client.post(self.book_list_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["title"], data["title"])
+
+    def test_get_book_list(self):
+        """Test retrieving book list"""
+        response = self.client.get(self.book_list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
 
     def test_get_book_detail(self):
-        """Test retrieving a single book by ID (GET /api/books/<id>/)"""
-        response = self.client.get(self.detail_url)
+        """Test retrieving a single book"""
+        response = self.client.get(self.book_detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["title"], self.book1.title)
 
     def test_update_book(self):
-        """Test updating a book (PUT /api/books/<id>/)"""
-        data = {"title": "Updated Book", "author": "John Doe", "publication_year": 2024}
-        response = self.client.put(self.detail_url, data)
+        """Test updating a book"""
+        updated_data = {"title": "Updated Book", "author": "Updated Author", "price": 25.99}
+        response = self.client.put(self.book_detail_url, updated_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["title"], updated_data["title"])
 
     def test_delete_book(self):
-        """Test deleting a book (DELETE /api/books/<id>/)"""
-        response = self.client.delete(self.detail_url)
+        """Test deleting a book"""
+        response = self.client.delete(self.book_detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Book.objects.filter(id=self.book1.id).exists())
 
     def test_filter_books(self):
-        """Test filtering books by author (GET /api/books/?author=John Doe)"""
-        response = self.client.get(f"{self.list_url}?author=John Doe")
+        """Test filtering books by title"""
+        response = self.client.get(self.book_list_url, {"title": "Book One"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["title"], "Book One")
 
     def test_search_books(self):
-        """Test searching books by title (GET /api/books/?search=Test)"""
-        response = self.client.get(f"{self.list_url}?search=Test")
+        """Test searching books by author"""
+        response = self.client.get(self.book_list_url, {"search": "Author Two"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["author"], "Author Two")
 
     def test_order_books(self):
-        """Test ordering books by title (GET /api/books/?ordering=title)"""
-        response = self.client.get(f"{self.list_url}?ordering=title")
+        """Test ordering books by price"""
+        response = self.client.get(self.book_list_url, {"ordering": "price"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertLess(response.data[0]["price"], response.data[1]["price"])
 
-    def test_permissions(self):
-        """Test that unauthenticated users cannot create, update, or delete books"""
+    def test_authentication_required(self):
+        """Test that authentication is required for protected endpoints"""
         self.client.logout()
-        response = self.client.post(self.list_url, {"title": "Unauthorized Book", "author": "Jane", "publication_year": 2025})
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-
+        response = self.client.post(self.book_list_url, {"title": "Unauthorized Book", "author": "X", "price": 5})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
