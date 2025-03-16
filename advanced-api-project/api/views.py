@@ -1,21 +1,26 @@
-from rest_framework import generics, filters
-from django_filters import rest_framework as django_filters  # ✅ Add this import
+from rest_framework import generics, permissions
 from .models import Book
 from .serializers import BookSerializer
 
-class BookListView(generics.ListAPIView):
+# ✅ Liste des livres (GET) et ajout d'un livre (POST)
+class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
-    # ✅ Add filter, search, and ordering
-    filter_backends = [django_filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    # Permissions: Lecture pour tous, écriture pour les utilisateurs authentifiés
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [permissions.IsAuthenticated()]
+        return []
 
-    # ✅ Enable filtering by these fields
-    filterset_fields = ['title', 'author', 'publication_year']
+# ✅ Détails d'un livre (GET), mise à jour (PUT/PATCH) et suppression (DELETE)
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
-    # ✅ Enable searching (text-based) in these fields
-    search_fields = ['title', 'author']
+    # Permissions: Lecture pour tous, modifications pour les utilisateurs authentifiés
+    def get_permissions(self):
+        if self.request.method in ["PUT", "PATCH", "DELETE"]:
+            return [permissions.IsAuthenticated()]
+        return []
 
-    # ✅ Enable ordering by these fields
-    ordering_fields = ['title', 'publication_year']
-    ordering = ['title']  # Default ordering
