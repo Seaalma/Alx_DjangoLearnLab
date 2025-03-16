@@ -90,8 +90,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': ':memory:',  # Runs tests in RAM to avoid modifying your real DB
     }
 }
+
 
 
 # Password validation
