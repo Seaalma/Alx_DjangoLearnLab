@@ -8,10 +8,3 @@ urlpatterns = [
     path('books/<int:pk>/update/', views.BookUpdateView.as_view(), name='book-update'),  # Update an existing book
     path('books/<int:pk>/delete/', views.BookDeleteView.as_view(), name='book-delete'),  # Delete a book
 ]
-from django.urls import path, include
-
-urlpatterns = [
-    path('api/', include('api.urls')),  # Ensure this line includes the api URLs
-    # Other URL patterns if needed
-]
-
