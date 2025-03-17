@@ -8,3 +8,10 @@ urlpatterns = [
     path("books/delete/<int:pk>/", DeleteView.as_view(), name="book-delete"),  # Ajustement ici
     path("books/<int:pk>/", DetailView.as_view(), name="book-detail"),
 ]
+from django.contrib import admin
+from django.urls import path, include  # Make sure `include` is imported
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),  # Add this line to include your API URLs
+]
