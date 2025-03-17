@@ -1,16 +1,10 @@
 from django.urls import path
-from .views import BookListCreateView, BookDetailView
+from .views import ListView, DetailView, UpdateView, DeleteView
 
 urlpatterns = [
-    path("books/", BookListCreateView.as_view(), name="book-list-create"),
-    path("books/<int:pk>/", BookDetailView.as_view(), name="book-detail"),
+    path("books/", ListView.as_view(), name="book-list"),
+    path("books/<int:pk>/", DetailView.as_view(), name="book-detail"),
+    path("books/<int:pk>/update/", UpdateView.as_view(), name="book-update"),
+    path("books/<int:pk>/delete/", DeleteView.as_view(), name="book-delete"),
 ]
-class BookListCreateView(generics.ListCreateAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
 
-    def perform_create(self, serializer):
-        # Exemple de validation personnalisée (peut être adaptée selon ton modèle)
-        if serializer.validated_data["title"].lower() == "forbidden":
-            raise serializers.ValidationError({"title": "Ce titre est interdit"})
-        serializer.save()
