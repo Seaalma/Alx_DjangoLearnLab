@@ -1,9 +1,15 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
+from django.contrib.auth.models import User
 from .models import Book
 
 class BookTests(APITestCase):
-    
+
+    def setUp(self):
+        # Create a test user and log them in
+        self.user = User.objects.create_user(username='testuser', password='password123')
+        self.client.login(username='testuser', password='password123')
+
     def test_create_book(self):
         url = '/api/books/'
         data = {'title': 'Test Book', 'author': 'Test Author', 'isbn': '123456789'}
@@ -11,8 +17,6 @@ class BookTests(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Book.objects.count(), 1)
-        
-        # Ensure the response contains the correct data
         self.assertEqual(response.data['title'], 'Test Book')
         self.assertEqual(response.data['author'], 'Test Author')
         self.assertEqual(response.data['isbn'], '123456789')
@@ -47,5 +51,3 @@ class BookTests(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Book.objects.count(), 0)
-
-
