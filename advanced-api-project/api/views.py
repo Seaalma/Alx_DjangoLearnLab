@@ -3,6 +3,17 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from .models import Book
 from .serializers import BookSerializer
 
+class BookListView(generics.ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]  # Allow unauthenticated users to view, but authenticated for creation
+
+# Detail view for retrieving a single book by ID
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]  # Allow unauthenticated users to view, but authenticated for update/delete
+
 # ✅ Vue pour lister tous les livres (accessible à tous)
 class ListView(generics.ListAPIView):
     queryset = Book.objects.all()
