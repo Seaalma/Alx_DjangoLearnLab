@@ -88,18 +88,18 @@ WSGI_APPLICATION = 'advanced_api_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # or 'django.db.backends.sqlite3' for SQLite
+        'ENGINE': 'django.db.backends.postgresql',  # Or 'django.db.backends.sqlite3' for SQLite
         'NAME': 'your_database_name',
         'USER': 'your_database_user',
         'PASSWORD': 'your_database_password',
         'HOST': 'localhost',
         'PORT': '5432',
         'TEST': {
-            'NAME': 'your_test_database_name',  # Specific database for testing
+            'NAME': 'your_test_database_name',  # This creates a separate test database
         },
     }
-
 }
+
 
 
 
