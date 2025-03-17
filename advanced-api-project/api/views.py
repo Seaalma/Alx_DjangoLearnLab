@@ -2,25 +2,27 @@ from rest_framework import generics, permissions
 from .models import Book
 from .serializers import BookSerializer
 
-# ✅ Liste des livres (GET) et ajout d'un livre (POST)
-class BookListCreateView(generics.ListCreateAPIView):
+# ✅ Vue pour lister tous les livres
+class ListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
 
-    # Permissions: Lecture pour tous, écriture pour les utilisateurs authentifiés
-    def get_permissions(self):
-        if self.request.method == "POST":
-            return [permissions.IsAuthenticated()]
-        return []
-
-# ✅ Détails d'un livre (GET), mise à jour (PUT/PATCH) et suppression (DELETE)
-class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
+# ✅ Vue pour récupérer, mettre à jour et supprimer un livre
+class DetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    permission_classes = [permissions.AllowAny]
 
-    # Permissions: Lecture pour tous, modifications pour les utilisateurs authentifiés
-    def get_permissions(self):
-        if self.request.method in ["PUT", "PATCH", "DELETE"]:
-            return [permissions.IsAuthenticated()]
-        return []
+# ✅ Vue pour mettre à jour un livre
+class UpdateView(generics.UpdateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+# ✅ Vue pour supprimer un livre
+class DeleteView(generics.DestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
