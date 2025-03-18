@@ -1,36 +1,35 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
 from .models import Post
-from .forms import PostForm
 
-# List all blog posts
+# ✅ Liste des articles
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
-    ordering = ['-created_at']
+    ordering = ['-date_posted']
 
-# View details of a single post
+# ✅ Détail d'un article
 class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
 
-# Create a new post
+# ✅ Création d'un article (réservé aux utilisateurs authentifiés)
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    form_class = PostForm
+    fields = ['title', 'content']
     template_name = 'blog/post_form.html'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-# Update a post (Only author can edit)
+# ✅ Mise à jour d'un article (seulement par l'auteur)
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    form_class = PostForm
+    fields = ['title', 'content']
     template_name = 'blog/post_form.html'
 
     def form_valid(self, form):
@@ -41,7 +40,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         post = self.get_object()
         return self.request.user == post.author
 
-# Delete a post (Only author can delete)
+# ✅ Suppression d'un article (seulement par l'auteur)
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
