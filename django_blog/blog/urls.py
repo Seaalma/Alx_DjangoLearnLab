@@ -1,9 +1,16 @@
 from django.urls import path
-from .views import add_comment, edit_comment, delete_comment, post_detail
+from .views import (
+    PostListView,
+    PostDetailView,
+    PostCreateView,
+    PostUpdateView,
+    PostDeleteView
+)
 
 urlpatterns = [
-    path('posts/<int:post_id>/', post_detail, name='post_detail'),
-    path('posts/<int:post_id>/comments/new/', add_comment, name='add_comment'),
-    path('comments/<int:comment_id>/edit/', edit_comment, name='edit_comment'),
-    path('comments/<int:comment_id>/delete/', delete_comment, name='delete_comment'),
+    path('', PostListView.as_view(), name='post-list'),  # List all posts
+    path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),  # Single post detail
+    path('post/new/', PostCreateView.as_view(), name='post-create'),  # Create a new post
+    path('post/<int:pk>/edit/', PostUpdateView.as_view(), name='post-edit'),  # Edit post
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),  # Delete post
 ]
