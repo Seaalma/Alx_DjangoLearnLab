@@ -1,31 +1,12 @@
 {% extends 'blog/base.html' %}
-
 {% block content %}
-  <h1>{{ post.title }}</h1>
-  <p>{{ post.content }}</p>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <p>By {{ post.author }} on {{ post.created_at }}</p>
 
-  <h2>Commentaires</h2>
-  {% for comment in comments %}
-    <div>
-      <p><strong>{{ comment.author }}</strong> - {{ comment.created_at }}</p>
-      <p>{{ comment.content }}</p>
-      {% if comment.author == request.user %}
-        <a href="{% url 'edit_comment' comment.id %}">Modifier</a> |
-        <a href="{% url 'delete_comment' comment.id %}">Supprimer</a>
-      {% endif %}
-    </div>
-  {% empty %}
-    <p>Aucun commentaire pour l'instant.</p>
-  {% endfor %}
-
-  {% if user.is_authenticated %}
-    <h3>Ajouter un commentaire</h3>
-    <form method="post" action="{% url 'add_comment' post.id %}">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Publier</button>
-    </form>
-  {% else %}
-    <p><a href="{% url 'login' %}">Connectez-vous</a> pour ajouter un commentaire.</p>
-  {% endif %}
+    {% if post.author == request.user %}
+        <a href="{% url 'post-edit' post.pk %}">Edit</a> |
+        <a href="{% url 'post-delete' post.pk %}">Delete</a>
+    {% endif %}
+    <a href="{% url 'post-list' %}">Back to all posts</a>
 {% endblock %}
