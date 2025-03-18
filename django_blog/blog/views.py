@@ -6,6 +6,12 @@ from .forms import CommentForm
 from django.shortcuts import render
 from django.db.models import Q
 from .models import Post
+from taggit.models import Tag
+
+def posts_by_tag(request, tag_slug):
+    tag = Tag.objects.get(slug=tag_slug)
+    posts = Post.objects.filter(tags=tag)
+    return render(request, 'blog/posts_by_tag.html', {'tag': tag, 'posts': posts})
 
 def search_posts(request):
     query = request.GET.get('q')
