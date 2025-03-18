@@ -18,6 +18,7 @@ def search_posts(request):
             Q(tags__name__icontains=query)
         ).distinct()
 
+
     return render(request, 'blog/search_results.html', {'query': query, 'results': results})
 
 # ✅ Already Added in Previous Step
