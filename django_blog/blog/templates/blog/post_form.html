@@ -1,3 +1,5 @@
+<label for="id_tags">Tags:</label>
+<input type="text" name="tags" id="id_tags" placeholder="Séparer les tags par des virgules">
 {% extends 'blog/base.html' %}
 {% block content %}
     <h1>{% if form.instance.pk %}Edit Post{% else %}New Post{% endif %}</h1>
