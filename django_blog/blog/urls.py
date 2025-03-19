@@ -12,7 +12,7 @@ urlpatterns = [
     path('posts/new/', PostCreateView.as_view(), name='post-create'),
     
     # URL for editing a post
-    path('posts/<int:pk>/edit/', PostUpdateView.as_view(), name='post-edit'),
+    path('posts/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
     
     # URL for deleting a post
     path('posts/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
