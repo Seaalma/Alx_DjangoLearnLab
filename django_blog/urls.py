@@ -1,4 +1,4 @@
-afrom django.urls import path
+from django.urls import path
 from .views import CommentCreateView, CommentUpdateView, CommentDeleteView
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
 urlpatterns = [
