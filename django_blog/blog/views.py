@@ -9,6 +9,7 @@ from .forms import CommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # List view for posts
 class PostListView(ListView):
@@ -104,3 +105,14 @@ class CommentCreateView(CreateView):
     def get_success_url(self):
         post = get_object_or_404(Post, id=self.kwargs['post_id'])
         return reverse_lazy('post_detail', kwargs={'post_id': post.id})
+class CommentUpdateView(LoginRequiredMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/edit_comment.html'
+
+    def get_queryset(self):
+        # Ensure that the user can only edit their own comments
+        return Comment.objects.filter(author=self.request.user)
+
+    def get_success_url(self):
+        return reverse_lazy('post_detail', kwargs={'post_id': self.object.post.id})
