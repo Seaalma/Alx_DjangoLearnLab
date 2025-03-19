@@ -2,7 +2,7 @@ from django.urls import path
 from .views import CommentCreateView, CommentUpdateView, CommentDeleteView
 from django.urls import path
 from .views import search_posts, posts_by_tag
-
+from .views import PostByTagListView
    
 urlpatterns = [
     # ✅ Ensure correct and intuitive URL structure for comments
@@ -11,5 +11,7 @@ urlpatterns = [
     path("comment/<int:pk>/delete/", CommentDeleteView.as_view(), name="delete-comment"),
     path('search/', search_posts, name='search_posts'),
     path('tags/<slug:tag_slug>/', posts_by_tag, name='posts_by_tag'),
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts_by_tag'),
+
 ]
 
