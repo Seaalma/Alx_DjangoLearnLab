@@ -116,3 +116,12 @@ class CommentUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('post_detail', kwargs={'post_id': self.object.post.id})
+
+class CommentDeleteView(LoginRequiredMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+    success_url = reverse_lazy('post_detail')
+
+    def get_queryset(self):
+        # Ensure that the user can only delete their own comments
+        return Comment.objects.filter(author=self.request.user)
