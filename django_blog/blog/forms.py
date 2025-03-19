@@ -1,9 +1,10 @@
 from django import forms
 from .models import Post
-from taggit.forms import TagWidget  # Ajoutez cette ligne
+from taggit.forms import TagWidget  # Importer TagWidget
+from django.forms import widgets  # ✅ Ajouter cette ligne
 
 class PostForm(forms.ModelForm):
-    tags = forms.CharField(widget=TagWidget())  # Utilisation du widget correct
+    tags = forms.CharField(widget=TagWidget())  # Utilisation correcte du widget pour les tags
 
     class Meta:
         model = Post
