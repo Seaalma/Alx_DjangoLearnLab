@@ -7,6 +7,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
 from .forms import CommentForm
 from django.contrib.auth.decorators import login_required
+from django.views.generic import CreateView
+from django.shortcuts import get_object_or_404
+
 # List view for posts
 class PostListView(ListView):
     model = Post
@@ -87,4 +90,17 @@ def delete_comment(request, comment_id):
     if comment.author == request.user:
         comment.delete()
     return redirect('post_detail', post_id=comment.post.id)
+class CommentCreateView(CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/post_detail.html'  # You may want to render the post with its comments
 
+    def form_valid(self, form):
+        post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        return reverse_lazy('post_detail', kwargs={'post_id': post.id})
