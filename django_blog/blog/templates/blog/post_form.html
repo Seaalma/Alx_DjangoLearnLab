@@ -1,3 +1,12 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+  <h2>{% if post %}Edit{% else %}Create{% endif %} Blog Post</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}
 <label for="id_tags">Tags:</label>
 <input type="text" name="tags" id="id_tags" placeholder="Séparer les tags par des virgules">
 {% extends 'blog/base.html' %}
