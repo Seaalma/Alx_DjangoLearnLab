@@ -97,14 +97,13 @@ class CommentCreateView(CreateView):
     template_name = 'blog/post_detail.html'  # You may want to render the post with its comments
 
     def form_valid(self, form):
-        post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
         form.instance.post = post
         form.instance.author = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
-        post = get_object_or_404(Post, id=self.kwargs['post_id'])
-        return reverse_lazy('post_detail', kwargs={'post_id': post.id})
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post.id})
 class CommentUpdateView(LoginRequiredMixin, UpdateView):
     model = Comment
     form_class = CommentForm
