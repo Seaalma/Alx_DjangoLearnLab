@@ -18,6 +18,20 @@ urlpatterns = [
     path('search/', search_posts, name='search_posts'),
     path('tags/<slug:tag_slug>/', posts_by_tag, name='posts_by_tag'),
     path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts_by_tag'),
+    
+    # URL for viewing a single post
+    path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
+    
+    # URL for creating a new post
+    path('posts/new/', PostCreateView.as_view(), name='post-create'),
+    
+    # URL for editing a post
+    path('posts/<int:pk>/edit/', PostUpdateView.as_view(), name='post-edit'),
+    
+    # URL for deleting a post
+    path('posts/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+]
+
 
 ]
 
