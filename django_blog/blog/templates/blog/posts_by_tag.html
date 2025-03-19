@@ -5,6 +5,8 @@
 <ul>
     {% for post in posts %}
         <li><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></li>
+    {% empty %}
+        <p>Aucun article trouvé pour ce tag.</p>
     {% endfor %}
 </ul>
 {% endblock %}
