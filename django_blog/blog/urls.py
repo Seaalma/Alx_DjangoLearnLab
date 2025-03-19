@@ -33,6 +33,18 @@ urlpatterns = [
     
     # Delete an existing comment
     path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='delete_comment'),
+    # Post detail and displaying comments
+    path('post/<int:pk>/', views.post_detail, name='post_detail'),
+
+    # Create a new comment (fixing the expected pattern: "post/<int:pk>/comments/new/")
+    path('post/<int:pk>/comments/new/', views.CommentCreateView.as_view(), name='add_comment'),
+
+    # Edit an existing comment
+    path('comment/<int:pk>/update/', views.CommentUpdateView.as_view(), name='edit_comment'),
+
+    # Delete an existing comment
+    path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='delete_comment'),
+
 
 ]
 
