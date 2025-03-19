@@ -55,21 +55,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         # blog/views.py
 
 
-def post_detail(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    comments = post.comments.all()  # Retrieve comments for the post
-    if request.method == 'POST':
-        comment_form = CommentForm(request.POST)
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.post = post
-            new_comment.author = request.user
-            new_comment.save()
-            return redirect('post_detail', post_id=post.id)  # Redirect after posting comment
-    else:
-        comment_form = CommentForm()
-
-    return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments, 'comment_form': comment_form})
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    comments = post.comments_set.all()  # Retrieve comments for the post
+        form = CommentForm()
+    return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments, 'form': form})
 
 @login_required
 def edit_comment(request, comment_id):
