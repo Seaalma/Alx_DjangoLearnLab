@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
 from . import views
+from .views import search_posts, posts_by_tag
 urlpatterns = [
     # URL for listing all posts
     path('post/', PostListView.as_view(), name='post-list'),
@@ -44,7 +45,8 @@ urlpatterns = [
 
     # Delete an existing comment
     path('comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='delete_comment'),
-
+ path('search/', search_posts, name='search_posts'),
+    path('tags/<slug:tag_slug>/', posts_by_tag, name='posts_by_tag'),
 
 ]
 
