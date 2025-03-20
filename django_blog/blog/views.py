@@ -9,6 +9,7 @@ from .forms import CommentForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateVie
 from django.db.models import Q
+from taggit.models import Tag
 # List view for posts
 class PostListView(ListView):
     model = Post
@@ -124,3 +125,7 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
         ).distinct()
 
     return render(request, 'blog/search_results.html', {'query': query, 'results': results})
+def posts_by_tag(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.objects.filter(tags=tag)
+    return render(request, 'blog/posts_by_tag.html', {'tag': tag, 'posts': posts})
