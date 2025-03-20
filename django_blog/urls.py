@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
-
+from .views import search_posts, posts_by_tag
 urlpatterns = [
     # URL for listing all posts
     path('post/', PostListView.as_view(), name='post-list'),
@@ -16,4 +16,6 @@ urlpatterns = [
     
     # URL for deleting a post
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+    path('search/', search_posts, name='search_posts'),
+    path('tags/<slug:tag_slug>/', posts_by_tag, name='posts_by_tag'),
 ]
