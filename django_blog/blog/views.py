@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+tfrom django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -7,10 +7,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
 from .forms import CommentForm
 from django.contrib.auth.decorators import login_required
-from django.views.generic import CreateView
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.views.generic import CreateVie
+from django.db.models import Q
 # List view for posts
 class PostListView(ListView):
     model = Post
@@ -114,3 +112,15 @@ class CommentDeleteView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         # Ensure that the user can only delete their own comments
         return Comment.objects.filter(author=self.request.user)
+     def search_posts(request):
+    query = request.GET.get('q')
+    results = []
+
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, 'blog/search_results.html', {'query': query, 'results': results})
