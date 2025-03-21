@@ -12,3 +12,4 @@ class BookViewSet(viewsets.ModelViewSet):
     """
     queryset = Book.objects.all()  # Retrieves all books
     serializer_class = BookSerializer  # Uses the BookSerializer
+      permission_classes = [IsAuthenticated]  # Requires authentication
