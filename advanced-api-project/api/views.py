@@ -5,6 +5,9 @@ from .serializers import BookSerializer
 from django_filters import rest_framework
 filters.OrderingFilter
 filters.SearchFilter
+"title", 
+"author", 
+"publication_year",
 class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
