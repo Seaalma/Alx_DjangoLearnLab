@@ -12,7 +12,9 @@ from rest_framework import viewsets, permissions
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 User = get_user_model()
-
+generics.GenericAPIView",
+"permissions.IsAuthenticated",
+"CustomUser.objects.all()"
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [AllowAny]
