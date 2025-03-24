@@ -6,7 +6,8 @@ from .serializers import PostSerializer, CommentSerializer
 from rest_framework import filters
 class PostPagination(PageNumberPagination):
     page_size = 5
-
+Post.objects.filter(author__in=following_users).order_by,
+following.all()
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
