@@ -4,6 +4,7 @@ from .models import Book
 from .serializers import BookSerializer
 from django_filters import rest_framework
 filters.OrderingFilter
+filters.SearchFilter
 class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
