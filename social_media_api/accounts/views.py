@@ -12,7 +12,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.pagination import PageNumberPagination
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
-
+from rest_framework import filters
 User = get_user_model()
 
 class RegisterView(generics.CreateAPIView):
@@ -49,7 +49,8 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     pagination_class = PostPagination
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
+filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'content']
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
