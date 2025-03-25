@@ -11,7 +11,8 @@ from django.shortcuts import get_object_or_404
 from .models import Post, Like
 from notifications.models import Notification
 from django.contrib.contenttypes.models import ContentType
-
+from rest_framework import status, generics
+from rest_framework.views import APIView
 class PostPagination(PageNumberPagination):
     page_size = 5
 Post.objects.filter(author__in=following_users).order_by,
@@ -75,4 +76,35 @@ def unlike_post(request, pk):
         like.delete()
         return Response({"message": "Post unliked"}, status=200)
     return Response({"message": "You haven't liked this post"}, status=400)
-        
+   class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)  # Ajout du get_object_or_404
+
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+
+        if created:
+            # Générer une notification pour le propriétaire du post
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target_content_type=ContentType.objects.get_for_model(post),
+                target_object_id=post.id
+            )
+            return Response({"message": "Post liked"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message": "You have already liked this post"}, status=status.HTTP_400_BAD_REQUEST)
+
+class UnlikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)  # Ajout du get_object_or_404
+
+        like = Like.objects.filter(user=request.user, post=post).first()
+        if like:
+            like.delete()
+            return Response({"message": "Post unliked"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "You haven't liked this post yet"}, status=status.HTTP_400_BAD_REQUEST)
