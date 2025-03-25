@@ -143,4 +143,25 @@ TEMPLATES = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEBUG = False  # Désactiver le mode debug en production
 
+ALLOWED_HOSTS = ["your-production-domain.com", "your-heroku-app.herokuapp.com"]
+
+# Sécurisation
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True
+
+# Base de données
+DATABASES = {
+    "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
+}
+
+# Gestion des fichiers statiques
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Gestion des fichiers médias (si nécessaire)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
