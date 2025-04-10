@@ -10,7 +10,20 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateVie
 from django.db.models import Q
 from taggit.models import Tag
+from django.contrib import messages
+from .forms import UserUpdateForm
 # List view for posts
+def profile(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Votre profil a été mis à jour !')
+            return redirect('profile')
+    else:
+        form = UserUpdateForm(instance=request.user)
+
+    return render(request, 'blog/profile.html', {'form': form})
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
