@@ -2,7 +2,12 @@ from django.urls import path
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView
 from . import views
 from .views import search_posts, posts_by_tag
+from django.contrib.auth import views as auth_views
 urlpatterns = [
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('register/', views.register, name='register'),
+    path('profile/', views.profile, name='profile'),
     # URL for listing all posts
     path('post/', PostListView.as_view(), name='post-list'),
     
