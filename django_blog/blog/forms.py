@@ -3,6 +3,11 @@ from .models import Post
 from taggit.forms import TagWidget  # Importer TagWidget
 from django.forms import widgets  # ✅ Ajouter cette ligne
 from .models import Comment
+from django.contrib.auth.models import User
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
 class PostForm(forms.ModelForm):
     tags = forms.CharField(widget=TagWidget())  # Utilisation correcte du widget pour les tags
 
