@@ -1,3 +1,10 @@
 <h2>Welcome, {{ user.username }}</h2>
 <p>Email: {{ user.email }}</p>
 <a href="{% url 'logout' %}">Logout</a>
+<!-- Exemple dans templates/blog/profile.html -->
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Mettre à jour</button>
+</form>
+
